@@ -1,0 +1,75 @@
+---
+title: "Exploring Storms"
+author: "GenesisE27"
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+```
+
+```{r}
+#| label: storms-plot
+
+storms |>
+  filter(status %in% c("tropical depression", "tropical storm", "hurricane")) |>
+  mutate(
+    status = factor(
+      status,
+      levels = c("tropical depression", "tropical storm", "hurricane")
+    )
+  ) |>
+  distinct(year, name, status) |>
+  count(year, status) |>
+  complete(year, status, fill = list(n = 0)) |>
+  ggplot(aes(x = year, y = n, fill = status)) +
+  geom_area(alpha = 0.85) +
+  scale_fill_manual(
+    values = c(
+      "tropical depression" = "lightblue",
+      "tropical storm" = "orange",
+      "hurricane" = "darkred"
+    )
+  ) +
+  labs(
+    title = "Named Storms in the Atlantic by Year and Type",
+    subtitle = "Annual count of tropical depressions, tropical storms, and hurricanes (1975–2022)",
+    x = "Year",
+    y = "Number of Storms",
+    fill = "Storm Type",
+    caption = "Source: NOAA Atlantic hurricane database (dplyr::storms)"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: storms-data
+#| cache: true
+
+storms_recent <- storms |>
+  filter(year >= 2000) |>
+  select(year, name, status, wind, pressure)
+```
+
+```{r}
+#| label: wind-pressure-plot
+
+storms_recent |>
+  ggplot(aes(x = wind, y = pressure, color = status)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Storm Pressure vs. Wind Speed (2000–2022)",
+    subtitle = "Stronger winds are associated with lower atmospheric pressure",
+    x = "Maximum Sustained Wind Speed (knots)",
+    y = "Air Pressure at Storm Center (millibars)",
+    color = "Storm Status",
+    caption = "Source: NOAA Atlantic hurricane database (dplyr::storms)"
+  ) +
+  theme_minimal()
+```
+
+

@@ -1,0 +1,19 @@
+# R session and project files
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Quarto generated files
+.quarto/
+*_cache/
+*_files/
+_site/
+
+# renv local library
+renv/library/
+renv/staging/
+
+# OS files
+.DS_Store
+Thumbs.db
